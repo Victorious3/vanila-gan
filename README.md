@@ -1,10 +1,10 @@
 # Vanila-GAN
-Teamproject Vanila-GAN Group 2.
+Teamproject Vanila-GAN Group 2.<br />
 Team members: Daniel, Jialu, Lasse
 
 # Documentation<br />
 #### 22.05.2020<br />
-We got in touch by Email,and the created a whatsapp group and a discord Server.<br />
+We got in touch by Email,then created a whatsapp group and a discord Server.<br />
 
 #### 23.05.2020 - 24.05.2020<br />
 We created two channel "code" and "weblinks" on discord,in order to share material.Then we started our first call on discord and discussed how to implement gan.<br />
