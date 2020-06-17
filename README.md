@@ -283,9 +283,9 @@ def fake_data_target(size):
 
 ### Training Discriminator and Generator
 Reset gradients to avoid interference from the last gradient.<br />
-The function below will be implemented here.
+The function below will be implemented :
 
-<img src="d_function">
+<img src="d_function.jpg">
 
 ```
 def train_discriminator(optimizer, real_data, fake_data):
