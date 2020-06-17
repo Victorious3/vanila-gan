@@ -286,6 +286,7 @@ Reset gradients to avoid interference from the last gradient.<br />
 The function below will be implemented here.
 
 <img src="d_function">
+
 ```
 def train_discriminator(optimizer, real_data, fake_data):
     # Reset gradients
