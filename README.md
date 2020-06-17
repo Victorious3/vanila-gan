@@ -47,13 +47,12 @@ Mission accomplished.<br />
 1.Open Notebook in Google Colab with following link:https://colab.research.google.com/github/Victorious3/vanila-gan/blob/master/Generative_Adversarial_Networks_PyTorch.ipynb<br />
 2.To add this .ipynb file to Drive ,using the link 'https://drive.google.com/drive/my-drive' , run this cell and get authorization code.In this case TensorboardX-2.0 should be installed successfully.<br />
 3.In order to run the whole GAN-code,go under 'Run all' over the dropdown menu 'Runtime'.<br />
-4.<br />
 
 ## Overview<br />
 The Vanila GAN is a generative adversarial network that proposed by Ian Goodfellow to use adversarial processes to obtain generative models.The main part consists of Generator and Discriminator.<br />
 In this project,we using the MNIST dataset to holding images of handwritten numbers.<br />
 Our goal is to let the generator produces a large number of fake images,and let the discriminator to distinguish these 'fake data' and 'training data' .They will improve themselves together in this process,and in the end it will be impossible for discriminator to distinguish fake data and real data.In this way we can get a generator with good enough effect.<br />
-The process can be explained with the foto below:<br />
+The process can be explained with the photo below:<br />
 <img src="overview_01.jpg">
 
 ### Specific process <br />
