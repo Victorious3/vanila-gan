@@ -388,7 +388,7 @@ In the end (diagram(d)), G can generate enough “realistic” data to cheat D, 
 
 ### Output<br />
 The output image will be like:
-<img src="outputimage.png">
-Epoch: [0/300], Batch Num: [0/64]<br />
-Discriminator Loss: 0.3271, Generator Loss: 2.3171<br />
+<img src="100epochs.png">
+Epoch: [100/300], Batch Num: [0/64]<br />
+Discriminator Loss: 0.432, Generator Loss: 0.634<br />
 D(x): 0.8795, D(G(z)): 0.1612<br />
