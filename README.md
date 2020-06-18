@@ -130,7 +130,7 @@ def sample_noise(batch_size, dim):
 ```
 
 ### Discriminator<br />
-virsualized discriminator:
+The working priciple of discriminator:
 
 <img src="discriminator.jpg">
 
@@ -187,7 +187,7 @@ setup the discriminator
 ```
 
 ### generator<br />
-virsualized generator:
+The working principle of generator:
 
 <img src="generator.jpg">
 
