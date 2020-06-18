@@ -44,8 +44,9 @@ Mission accomplished.<br />
 
 
 ## Tutorial on how to run the GAN in Colab<br />
-1.Open Notebook in Google Colab with following link:https://colab.research.google.com/github/Victorious3/vanila-gan/blob/master/Generative_Adversarial_Networks_PyTorch.ipynb<br />
-2.To add this .ipynb file to Drive ,using the link 'https://drive.google.com/drive/my-drive' , run this cell and get authorization code.In this case TensorboardX-2.0 should be installed successfully.<br />
+1.Open the Notebook in Google Colab with the following link: <br />
+ https://colab.research.google.com/github/Victorious3/vanila-gan/blob/master/Generative_Adversarial_Networks_PyTorch.ipynb<br />
+2.Use the upload feature in Colab to upload the utils.py located at https://github.com/Victorious3/vanila-gan/blob/master/utils.py and run the first cell to import the required methods.<br />
 3.In order to run the whole GAN-code,go under 'Run all' over the dropdown menu 'Runtime'.<br />
 
 ## Overview<br />
@@ -65,16 +66,13 @@ We can implement it with following steps:<br />
 
 ## Explanation of code<br />
 ### Setup<br />
-We start by mounting a Google Drive
+We start by importing the Logger class from utils and check that everything is installed with tensorboardX
 
 ```
-from google.colab import drive
-drive.mount('/content/drive')
 
-import sys
-sys.path.append('/content/drive/My Drive')
+!pip install tensorboardX
+from utils import Logger
 
-!pip3 install tensorboardX
 ```
 
 import modules that contains the class,methode or variables that we need later
@@ -100,20 +98,20 @@ from utils import Logger
 ```
 
 ### Dataset<br />
-Set batch_size to 5000 since the default parameters will take 5,000 of the training examples. <br />
-The MNIST dataset will storage the test change data.
+Set batch_size to 128 since the default parameters will take 5,000 of the training examples. <br />
+The MNIST dataset will storage the test change data. <br />
+The data is transformed to a tensor with values from -1 to 1 instead of 0 to 1.
 
 ```
 MNIST_data = torchvision.datasets.MNIST(
     root='./data/MNIST_data',
     train=True,
     download=True,
-    transform=transforms.Compose([
-        transforms.ToTensor()
-    ])
+    transform=transforms.Compose([transforms.ToTensor(), transforms.Normalize(mean=(0.5), std=(0.5) ) ] )
 )
+
 MNIST_loader = torch.utils.data.DataLoader(
-    MNIST_data, batch_size=5000
+    MNIST_data, batch_size=128, shuffle=True
 )
 ```
 
