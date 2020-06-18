@@ -51,7 +51,7 @@ Mission accomplished.<br />
 ## Overview<br />
 The Vanila GAN is a generative adversarial network that proposed by Ian Goodfellow to use adversarial processes to obtain generative models.The main part consists of Generator and Discriminator.<br />
 In this project,we using the MNIST dataset to holding images of handwritten numbers.<br />
-Our goal is to let the generator produces a large number of fake images,and let the discriminator to distinguish these 'fake data' and 'training data' .They will improve themselves together in this process,and in the end it will be impossible for discriminator to distinguish fake data and real data.In this way we can get a generator with good enough effect.<br />
+Our goal is to let the generator produces a large number of fake images,and let the discriminator to distinguish these 'fake data' and 'training data' .They will improve themselves together in this process,and in the end it will be impossible for discriminator to distinguish fake data and real data.In this way we can get a generator with best effect.<br />
 The process can be explained with the photo below:<br />
 <img src="overview_01.jpg">
 
@@ -119,7 +119,7 @@ MNIST_loader = torch.utils.data.DataLoader(
 
 ### Random noise<br />
 We need to define some random noise to generate fake images later.<br />
-We generate uniform noise from -1 to 1.Since the range of torch.rand is from 0 to 1,we need to plus another one that multiply by -1.
+At first we generate uniform noise from -1 to 1,since the range of torch.rand is from 0 to 1,we need to plus another one that multiply by -1.
 
 ```
 def sample_noise(batch_size, dim): 
@@ -130,7 +130,7 @@ def sample_noise(batch_size, dim):
 ```
 
 ### Discriminator<br />
-How discriminator virsualized:
+virsualized discriminator:
 
 <img src="discriminator.jpg">
 
@@ -140,7 +140,7 @@ LeakyReLU<br />
 Fully connected layer<br />
 LeakyReLU<br />
 Fully connected layer<br />
-The image size is 28 x 28.We define the input features with 28 x 28 = 784 and return if it is real or fake.
+The image size is 28 x 28. So we also define the input features with 28 x 28 = 784 and return if the image real or fake is.
 
 ```
 class DiscriminatorNet(torch.nn.Module):
@@ -187,7 +187,7 @@ setup the discriminator
 ```
 
 ### generator<br />
-How generator virsualized:
+virsualized generator:
 
 <img src="generator.jpg">
 
@@ -198,7 +198,7 @@ Fully connected layer<br />
 ReLU<br />
 Fully connected layer<br />
 TanH (to clip the image to be in the range of [-1,1])<br />
-The output feature here is also 784,and the input feature is same as dim.
+The output feature here is also 784, and the input feature is equal to dim.
 ```
 class GeneratorNet(torch.nn.Module):
 
@@ -242,18 +242,19 @@ setup the generator
 ```
 
 ### Optimization<br />
-We use the Optimizer Adam here.The parameters inside are first the type of network ,lr is learning rate,for example we can reduce the generator's g_loss by changing the initial learning rate of the optimization function.<br />
+We use the Optimizer Adam here.The first parameter inside are the type of network.<br />
+lr is learning rate,for example we can reduce the generator's g_loss by changing the initial learning rate of the optimization function.<br />
 ```
 # Optimizers
 d_optimizer = optim.Adam(discriminator.parameters(), lr=0.0002)
 g_optimizer = optim.Adam(generator.parameters(), lr=0.0002)
 ```
-Define a loss function nn.BCELoss(),input(X,Y),X need to pass Signoid,Y can only be float(0) or float(1).The loss will be calculated during this function. <br />
+Define a loss function nn.BCELoss().Input(X,Y), X need to pass Sigmoid,and Y can only be float(0) or float(1).The loss will be calculated during this function. <br />
 ```
 # Loss function
 loss = nn.BCELoss()
 ```
-We also define the number of steps to apply to the discriminator and number of epochs (use later in 'for epoch in range')
+We also define the number of steps to apply to the discriminator and the number of epochs (use later in 'for epoch in range')
 ```
 # Number of steps to apply to the discriminator
 d_steps = 1
