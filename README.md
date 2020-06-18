@@ -38,7 +38,7 @@ Train-generator and train-discriminator has been added.<br />
 We had our fourth meeting and dicussed to improve the logger function and README.<br />
 
 
-#### ?.06.2020<br />
+#### 18.06.2020<br />
 Mission accomplished.<br />
 
 
@@ -84,6 +84,7 @@ import torch.optim as optim
 from torch.autograd.variable import Variable
 import torchvision
 from torchvision import transforms
+from torchvision.transforms import  ToTensor, Normalize, Compose
 from torchvision.datasets import MNIST
 from torchvision.utils import make_grid
 from torch.utils.data import DataLoader
@@ -95,6 +96,7 @@ import a logger from a separate file but in a same folder as GAN itself.It will 
 
 ```
 from utils import Logger
+...
 ```
 
 ### Dataset<br />
@@ -111,8 +113,15 @@ MNIST_data = torchvision.datasets.MNIST(
 )
 
 MNIST_loader = torch.utils.data.DataLoader(
-    MNIST_data, batch_size=128, shuffle=True
+    MNIST_data, batch_size=64, shuffle=True
 )
+
+# checking if loaded data is transformed to a tensor with values from -1 to 1
+
+img, label = MNIST_data[0]
+print('Label: ', label)
+print(img[:,10:15,10:15])
+torch.min(img), torch.max(img)
 ```
 
 ### Random noise<br />
@@ -125,6 +134,8 @@ def sample_noise(batch_size, dim):
   if torch.cuda.is_available(): 
     return n.cuda() 
   return n
+ 
+sample_noise(5000,128)
 ```
 
 ### Discriminator<br />
@@ -160,28 +171,21 @@ class DiscriminatorNet(torch.nn.Module):
 
         self.hidden2 = nn.Sequential(
             nn.Linear(512, 256),
-            nn.LeakyReLU(0.2),
-        )
-        self.out = nn.Sequential(
-            torch.nn.Linear(256, n_out),
-            torch.nn.Sigmoid()
+            nn.LeakyReLU(0.2)
         )
 
         self.out = nn.Sequential(
-            nn.Linear(512, out_feat)
+            torch.nn.Linear(256, out_feat),
+            torch.nn.Sigmoid()
         )
 
     def forward(self, x):
         x = self.hidden0(x)
         x = self.hidden1(x)
+        x = self.hidden2(x)
         x = self.out(x)
         return x
 
-```
-setup the discriminator
-```
-
-    discriminator = DiscriminatorNet()
 ```
 
 ### generator<br />
@@ -202,7 +206,7 @@ class GeneratorNet(torch.nn.Module):
 
     def __init__(self):
         super(GeneratorNet, self).__init__()
-        in_feat = 128
+        in_feat = 64
         out_feat = 784
 
         self.hidden0 = nn.Sequential(
@@ -234,8 +238,9 @@ class GeneratorNet(torch.nn.Module):
         return x
                
 ```
-setup the generator
+setup the discriminator and generator
 ```
+    discriminator = DiscriminatorNet()
     generator = GeneratorNet() 
 ```
 
@@ -257,11 +262,11 @@ We also define the number of steps to apply to the discriminator and the number 
 # Number of steps to apply to the discriminator
 d_steps = 1
 # Number of epochs
-num_epochs = 200
+num_epochs = 300
 ```
 
-## Training a GAN
-### Real and fake data
+## Training a GAN<br />
+### Real and fake data<br />
 Assume the real data are alwalys one and the fake data are always zero, create a tensor containing ones and a tensor containing zeros,shape is equal to size.<br />
 One or zero will be returned in case the data is real or fake.
 
@@ -279,7 +284,7 @@ def fake_data_target(size):
     return data
 ```
 
-### Training Discriminator and Generator
+### Training Discriminator and Generator<br />
 Reset gradients to avoid interference from the last gradient.<br />
 The function below will be implemented :
 
@@ -329,13 +334,13 @@ def train_generator(optimizer, fake_data):
     return error
 ```
 
-### Testing with logger
+### Testing with logger<br />
 In the last step we will running and testing our code.To archived that,we can simply setting the data and using the function we defined before.
 
 ```
 logger = Logger(model_name='VGAN', data_name='MNIST')
-num_batches = 12
-num_test_samples = 8
+num_batches = 64
+num_test_samples = 16
 
 def vectors_to_images(vectors):
     return vectors.view(vectors.size(0), 1, 28, 28)
@@ -345,7 +350,7 @@ for epoch in range(num_epochs):
 
         # Train Discriminator
         real_data = Variable(real_batch.view(real_batch.size(0), 784))
-        # if torch.cuda.is_available(): real_data = real_data.cuda()
+        if torch.cuda.is_available(): real_data = real_data.cuda()
         # Generate fake data
         fake_data = generator(sample_noise( real_data.size(0), num_batches)).detach()
         # Train D
@@ -359,8 +364,8 @@ for epoch in range(num_epochs):
         # Log error
         logger.log(d_error, g_error, epoch, n_batch, num_batches)
         
-        if (n_batch) % 300 == 0: 
-            test_images = vectors_to_images(generator(sample_noise(256,256)))
+        if (n_batch) % 1024 == 0: 
+            test_images = vectors_to_images(generator(sample_noise(num_batches, 64)))
             test_images = test_images.data
             logger.log_images(test_images, num_test_samples,epoch, n_batch, num_batches);
             # Display status Logs
@@ -369,3 +374,18 @@ for epoch in range(num_epochs):
         # Model Checkpoints
         logger.save_models(generator, discriminator, epoch)
 ```
+
+
+## Summary<br />
+The game between Generator and Discriminator will eventually reach Nash equilibrium. The general training process is as follows:<br />
+<img src="balance.png">
+In this figure, the black line represents the distribution of real data, the green line represents the distribution of the fake data, and the blue line is the score of the discriminator (the higher the score after passing the sigmoid, then the discriminator will judge it as real data).<br />
+At the beginning of training (diagram(a)), G could not generate "realistic" data, and D was not stable. After more training (diagram(b)), D is more stable and can accurately distinguish the real data from the fake data. In diagram (c), D in return will gudie G to shift in the direction of real data distribution. <br \>
+In the end (diagram(d)), G can generate enough “realistic” data to cheat D, and D cannot distinguish between real data and generated data.<br \>
+
+### Output<br \>
+The output image will be like:
+<img src="outputimage.png">
+Epoch: [0/300], Batch Num: [0/64]<br />
+Discriminator Loss: 0.3271, Generator Loss: 2.3171<br />
+D(x): 0.8795, D(G(z)): 0.1612<br />
