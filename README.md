@@ -288,7 +288,7 @@ def fake_data_target(size):
 Reset gradients to avoid interference from the last gradient.<br />
 The function below will be implemented :
 
-<img src="d_function.jpg">
+<img src="dg_function.png">
 
 ```
 def train_discriminator(optimizer, real_data, fake_data):
@@ -383,7 +383,7 @@ In this figure, the black line represents the distribution of real data, the gre
 At the beginning of training (diagram(a)), G could not generate "realistic" data, and D was not stable. After more training (diagram(b)), D is more stable and can accurately distinguish the real data from the fake data. In diagram (c), D in return will gudie G to shift in the direction of real data distribution. <br \>
 In the end (diagram(d)), G can generate enough “realistic” data to cheat D, and D cannot distinguish between real data and generated data.<br \>
 
-### Output<br \>
+### Output<br />
 The output image will be like:
 <img src="outputimage.png">
 Epoch: [0/300], Batch Num: [0/64]<br />
